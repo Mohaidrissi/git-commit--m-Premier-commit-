@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        IMAGE_NAME = 'mohamedibnmustapha/mon-app-js:latest'
+        IMAGE_NAME = 'mon-app-js'
     }
     stages {
 
@@ -31,7 +31,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    bat "docker build -t %IMAGE_NAME% ."
+                    bat 'docker build -t %IMAGE_NAME% .'
                 }
             }
         }
