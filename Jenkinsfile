@@ -28,23 +28,32 @@ pipeline {
         }
 
            
-        stage('Build Docker Image') {
+         stage('login Docker Hub') {
             steps {
-                script {
-                    bat 'docker build -t %IMAGE_NAME% .'
-                }
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-id',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                  bat '''
+                   @echo off
+                   echo %DOCKER_PASS%| docker login -u %DOCKER_USER% --password-stdin
+                  '''                }
+              }
+           }
+         stage('Build Docker Image') {
+            steps {
+                bat ' docker build -t %IMAGE_NAME% . '
             }
         }
-
-        stage('Push Docker Image') {
+         stage('tag Docker Image') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'DOCKERHUB_USERNAME', passwordVariable: 'DOCKERHUB_PASSWORD')]) {
-                        bat 'docker login -u %DOCKERHUB_USERNAME% -p %DOCKERHUB_PASSWORD%'
-                        bat 'docker tag %IMAGE_NAME% %DOCKERHUB_USERNAME%/%IMAGE_NAME%:latest'
-                        bat 'docker push %DOCKERHUB_USERNAME%/%IMAGE_NAME%:latest'
-                    }
-                }
+                bat ' docker tag %IMAGE_NAME% mohamedibnmustapha/%IMAGE_NAME%'
+            }
+        }
+         stage('push Docker Image') {
+            steps {
+                bat ' docker push mohamedibnmustapha/%IMAGE_NAME%'
             }
         }
     }
