@@ -14,7 +14,7 @@ pipeline {
         stage('npm install') {
             steps {
                 script {
-                    sh 'npm install'
+                    bat 'npm install'
                 }
             }
         } 
@@ -22,7 +22,7 @@ pipeline {
         stage('npm Tests') {
             steps {
                 script {
-                    sh 'npm test'
+                    bat 'npm test'
                 }
             }
         }
@@ -31,7 +31,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${IMAGE_NAME} ."
+                    bat "docker build -t ${IMAGE_NAME} ."
                 }
             }
         }
